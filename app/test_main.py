@@ -1,7 +1,7 @@
-from app.main import outdated_products
 import datetime
-from unittest.mock import patch, MagicMock
 import pytest
+from freezegun import freeze_time
+from app.main import outdated_products
 
 
 @pytest.mark.parametrize(
@@ -28,12 +28,12 @@ import pytest
         ),
     ]
 )
-@patch("app.main.datetime.date")
 def test_outdated_products(
-        mock_date: MagicMock,
         product_list: list,
         today_date: datetime,
-        expected: datetime
+        expected: list
 ) -> None:
-    mock_date.today.return_value = today_date
+    freezer = freeze_time("2022-02-02")
+    freezer.start()
     assert outdated_products(product_list) == expected
+    freezer.start()
